@@ -24,10 +24,10 @@ var ingredients = [
     }
 ];
 
-app.get("/", function(request,response){
+app.get("/ingredients", function(request,response){
     response.send(ingredients);
 });
-app.post("/", function(request,response){
+app.post("/ingredients", function(request,response){
          var ingredient =request.body;
          if(!ingredient||ingredient.text===""){
     response.status(500).send({error: "Your ingredient must have text"});
@@ -36,6 +36,33 @@ app.post("/", function(request,response){
     response.status(200).send(ingredients);
 }
          });
+app.put("/ingredients/:ingredientId", function(request,response){
+    
+    var newText = request.body.text;
+    
+    if(!newText || newText === ""){
+        response.status(500).send({error:"You must provide ingridient text"});
+    } else{
+        var objectFound = false;
+        for(var x=0; x < ingredients.length; x++){
+            var ing = ingredients[x];
+            
+            if(ing.id===request.params.ingredientId){
+                ingredients[x].text=newText;
+                objectFound=true;
+                break;
+            }
+        }
+        if(!objectFound){
+            response.status(500).send({error:"Ingredient id not found"});
+        }
+        else{
+    response.send(ingredients);
+            
+        }
+    }
+    
+});
 //app.get("/", function(request,response){
 //    response.send("My first API!");
 //});
